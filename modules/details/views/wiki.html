@@ -18,7 +18,37 @@
 
     <!--right panel-->
     <div class="col-lg-8 mrgl45">
-     
+
+        <div>
+
+            <div ng-repeat="(key, value) in details" ng-if="value && (key==='name')">
+                <br/>
+                <br/>
+                <p style="font-weight:1000;font-size:18px;color:#333;"> &ensp;&ensp;&nbsp;  {{value }}</p>
+
+                <!--  <h4><b>  {{value}}</b></h4> -->
+
+
+            </div>
+
+
+
+            <div ng-repeat="(key, value) in details" ng-if="value && (key==='description')">
+                <!-- <h4> <b>{{value}} </b> </h4> -->
+
+                <p style="font-weight:bold;">  &ensp;&ensp; &nbsp;   {{value}}</p>
+            </div>
+            <div class="sm-txt2">
+
+
+                <p ng-repeat="(keytag, valtag) in details['$traits$']">&ensp;&ensp;&nbsp;&nbsp; Tags:
+                    <a ng-click="updateDetailsVariable($event)" ui-sref="Search({ searchid: keytag })" style="color: #636364 !important;">
+                        {{keytag}} </a></p>
+
+
+            </div>
+
+        </div>
         <tabset justified="true" class="col-lg-12 greyt">
             <tab heading="DETAILS">
         <div class="col-lg-12 rightpanal">
