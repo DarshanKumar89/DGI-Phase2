@@ -148,7 +148,7 @@
             <input type="text" ng-model="query" ng-keyup="$event.keyCode == 13 && executeSearch()"  class="form-control  search_table" placeholder="">
             <p style="color:#939598"> search: Table, DB, Column </p>
       <span class="input-group-btn" >
-          <button type="submit" class="search_btn" ng-click="executeSearch()" style="margin-bottom: 30px;"></button>
+          <button type="submit" ng-click="clickMe()" class="search_btn" ng-click="executeSearch()" style="margin-bottom: 30px;"></button>
 
       </span> </div>
     </div>
@@ -182,6 +182,7 @@
  </div>
 
     <div class="main" ui-view="content">
+
     </div>
 
 <div class="col-lg-2"></div>

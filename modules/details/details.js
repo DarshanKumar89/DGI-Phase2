@@ -163,11 +163,12 @@ DgcControllers.controller("ListController", ['$scope','$http', '$filter','$state
 
             });
 
-
+             $scope.loading = true;
             $http.get('/api/metadata/discovery/search?query='+$scope.SearchQuery)
                 .success(function (data) {
                     $scope.iserror=false;
                     $scope.entities=angular.fromJson(data.results.rows);
+                      $scope.loading = false;
                     if(!$scope.isUndefined($scope.entities)){
                         $scope.itemlength=$scope.entities.length;
                         $scope.datatype=data.results.dataType.typeName;
