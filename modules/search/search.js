@@ -1,7 +1,7 @@
 
-var DgcControllers = angular.module("DgcControllers", []);
+var DgcCont = angular.module("DgcCont", []);
 
- DgcControllers.service('sharedProperties', function () {
+ DgcCont.service('sharedProperties', function () {
         var property="";
 		var Query="";
 
@@ -22,7 +22,7 @@ var DgcControllers = angular.module("DgcControllers", []);
 
 
 
-DgcControllers.controller("headerController", ['$scope', '$window', '$location', '$stateParams', function($scope, $window, $location,$stateParams)
+DgcCont.controller("headerController", ['$scope', '$window', '$location', '$stateParams', function($scope, $window, $location,$stateParams)
     {
 		$scope.executeSearch=function executeSearch() {
             $window.location.href = "#Search/" + $scope.query;
@@ -33,9 +33,9 @@ DgcControllers.controller("headerController", ['$scope', '$window', '$location',
     }]
 );
 
-DgcControllers.controller("footerController", ['$scope','$http', function($scope, $http)
+DgcCont.controller("footerController", ['$scope','$http', function($scope, $http)
     {
-        $http.get('/api/metadata/admin/version')
+        $http.get('http://162.249.6.50:21000/api/metadata/admin/version')
             .success(function (data) {
                 $scope.iserror1=false;
                 $scope.apiVersion=data.Version;
@@ -50,10 +50,10 @@ DgcControllers.controller("footerController", ['$scope','$http', function($scope
 );
 
 
-DgcControllers.controller("NavController", ['$scope','$http', '$filter', 'sharedProperties', function($scope, $http, $filter, sharedProperties)
+DgcCont.controller("NavController", ['$scope','$http', '$filter', 'sharedProperties', function($scope, $http, $filter, sharedProperties)
 {
 
-    $http.get('/api/metadata/types')
+    $http.get('http://162.249.6.50:21000/api/metadata/types')
         .success(function (data) {
             $scope.iserror1=false;
             $scope.leftnav=angular.fromJson(data.results);
@@ -89,7 +89,7 @@ DgcControllers.controller("NavController", ['$scope','$http', '$filter', 'shared
 );
 
 
-DgcControllers.controller("ListController", ['$scope','$http', '$filter','$stateParams', 'sharedProperties', function($scope, $http, $filter, $stateParams, sharedProperties)
+DgcCont.controller("ListController", ['$scope','$http', '$filter','$stateParams', 'sharedProperties', function($scope, $http, $filter, $stateParams, sharedProperties)
     {
 
 
