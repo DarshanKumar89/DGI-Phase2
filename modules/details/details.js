@@ -52,14 +52,14 @@ DgcControllers.controller("headerController", ['$scope', '$window', '$location',
 
 DgcControllers.controller("footerController", ['$scope','$http', function($scope, $http)
     {
-        $http.get('/api/metadata/admin/version')
+        $http.get('http://162.249.6.50:21000/api/metadata/admin/version')
             .success(function (data) {
                 $scope.iserror1=false;
                 $scope.apiVersion=data.Version;
 
             })
                 .error(function () {
-                                     alert("Sorry No response");
+                                    // alert("Sorry No response");
 
                                  });
 
@@ -70,7 +70,7 @@ DgcControllers.controller("footerController", ['$scope','$http', function($scope
 DgcControllers.controller("NavController", ['$scope','$http', '$filter', 'sharedProperties', function($scope, $http, $filter, sharedProperties)
 {
 
-    $http.get('/api/metadata/types')
+    $http.get('http://162.249.6.50:21000/api/metadata/types')
         .success(function (data) {
             $scope.iserror1=false;
             $scope.leftnav=angular.fromJson(data.results);
@@ -91,7 +91,7 @@ DgcControllers.controller("NavController", ['$scope','$http', '$filter', 'shared
 
         })
          .error(function () {
-                          alert("Sorry No response");
+                         // alert("Sorry No response");
 
                       });
         //Nav to textbox
@@ -105,217 +105,220 @@ DgcControllers.controller("NavController", ['$scope','$http', '$filter', 'shared
 }]
 );
 
-
-DgcControllers.controller("ListController", ['$scope','$http', '$filter','$stateParams', 'sharedProperties', function($scope, $http, $filter, $stateParams, sharedProperties)
-    {
-
-
-        $scope.isUndefined = function (strval) {
-
-            return (typeof strval === "undefined");
-        }
-
-		$scope.StoreJson = function (strval) {
-            sharedProperties.setProperty(strval);
-        }
-
-        $scope.Showpaging = function(itemlength)
-        {
-
-            return (itemlength > 1);
-        }
-
-        $scope.isString=function isString(value){
-            return typeof value === 'string';
-        }
-
-        $scope.isObject=function isObject(value){
-
-            return typeof value === 'object';
-        }
-        $scope.Storeqry=function Storeqry(value){
-
-            return typeof value === 'object';
-        }
-
-
-
-        $scope.executeSearchForleftNav = function executeSearchForleftNav(strSearch){
-            $scope.query=strSearch;
-			 sharedProperties.setQuery(strSearch);
-            //$scope.executeSearch();
-        }
-
-        console.log($stateParams.searchid);
-           $scope.SearchQuery=$stateParams.searchid;
-            $scope.reverse = false;
-            $scope.filteredItems = [];
-            $scope.groupedItems = [];
-            $scope.itemsPerPage = 10;
-            $scope.pagedItems = [];
-            $scope.currentPage = 0;
-            $scope.itemlength=0;
-            $scope.configdata=[];
-            $scope.results=[];
-            $scope.datatype="";
-            $http.get('../modules/details/config.json').success(function(data){
-                $scope.configdata=data.Search;
-
-            });
-
-             $scope.loading = true;
-            $http.get('/api/metadata/discovery/search?query='+$scope.SearchQuery)
-                .success(function (data) {
-                    $scope.iserror=false;
-                    $scope.entities=angular.fromJson(data.results.rows);
-                      $scope.loading = false;
-                    if(!$scope.isUndefined($scope.entities)){
-                        $scope.itemlength=$scope.entities.length;
-                        $scope.datatype=data.results.dataType.typeName;
-
-                        var i=0;
-                        angular.forEach($scope.configdata, function(values, key) {
-                            if (key === data.results.dataType.typeName) {
-                                i=1;
-                            }
-                        });
-                            if(i===0){
-                                var tempdataType="__tempQueryResultStruct";
-                                //console.log(tempdataType);
-                                var datatype1=$scope.datatype.substring(0,tempdataType.length);
-                               // console.log(datatype1);
-                                if(datatype1===tempdataType){
-                                    $scope.datatype=tempdataType;
-                                }
-
-                            }
-
-                        sharedProperties.setProperty($scope.datatype);
-                    }
-
-               //     console.log($scope.entities);
-
-
-                    // to get value based on config but not use (used in view directly)
-                  /*  angular.forEach($scope.configdata, function(values, key) {
-                        if(key===data.results.dataType.typeName)
-                        {
-                            $scope.entities.forEach(function(k,v){
-                                    angular.forEach(values, function(value, key1) {
-                                        var obj = {};
-                                        obj[value] = k[value];
-                                    $scope.results.push(obj);
-                                });
-                            });
-                        }
-                    });
-                    */
-
-                    $scope.currentPage = 0;
-                    // now group by pages
-                    $scope.groupToPages();
-
-
-                })
-                 .error(function () {
-                     alert("Sorry No response");
-//                     $scope.iserror=true;
-//                     $scope.error=e;
-
-
-                 });
-
-//click value to textbox
-
-       $scope.updateVars = function (event) {
-        var appElement = document.querySelector('[ng-model=query]');
-    var $scope = angular.element(appElement).scope();
-     $scope.query = angular.element(event.target).text();
-    // $scope.$apply(function() {
-    //   $scope.query = angular.element(event.target).text();
-    // });
-
-
-         console.log("test");
-        console.log(angular.element(event.target).text());
-         console.log("testingFact");
-    };
-    //click value to textbox
-        $scope.getGuidName=function getGuidName(val){
-            $http.get('/api/metadata/entities/'+val)
-                .success(function (data) {
-                    $scope.iserror1=false;
-                    if(!$scope.isUndefined(data.results)){
-                        $scope.gname=angular.fromJson(data.results);
-                        console.log(angular.fromJson(data.results));
-                        // $scope.gname=data.results.name;
-                    }
-
-                })
-                    .error(function () {
-                                         alert("Sorry No response");
-
-                                     });
-            //return $scope.gname;
-        }
-
-
-        // calculate page in place
-        $scope.groupToPages = function () {
-            $scope.pagedItems = [];
-
-            for (var i = 0; i < $scope.itemlength; i++) {
-                if (i % $scope.itemsPerPage === 0) {
-                    $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.entities[i] ];
-                } else {
-                    $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.entities[i]);
-                }
-            }
-
-        };
-
-        $scope.range = function (start, end) {
-            var ret = [];
-            if (!end) {
-                end = start;
-                start = 0;
-            }
-            for (var i = start; i < end; i++) {
-                ret.push(i);
-            }
-            return ret;
-        };
-
-        $scope.prevPage = function () {
-            if ($scope.currentPage > 0) {
-                $scope.currentPage--;
-            }
-        };
-
-        $scope.nextPage = function () {
-            if ($scope.currentPage < $scope.pagedItems.length - 1) {
-                $scope.currentPage++;
-            }
-        };
-
-
-        $scope.firstPage = function () {
-            if ($scope.currentPage > 0) {
-                $scope.currentPage = 0;
-            }
-        };
-
-        $scope.lastPage = function () {
-            if ($scope.currentPage < $scope.pagedItems.length - 1) {
-                $scope.currentPage = $scope.pagedItems.length-1;
-            }
-        };
-        $scope.setPage = function () {
-            $scope.currentPage = this.n;
-        };
-
-    }]
-);
+//
+//DgcControllers.controller("ListController", ['$scope','$http', '$filter','$stateParams', 'sharedProperties', function($scope, $http, $filter, $stateParams, sharedProperties)
+//    {
+//
+//
+//        $scope.isUndefined = function (strval) {
+//
+//            return (typeof strval === "undefined");
+//        }
+//
+//		$scope.StoreJson = function (strval) {
+//            sharedProperties.setProperty(strval);
+//        }
+//
+//        $scope.Showpaging = function(itemlength)
+//        {
+//
+//            return (itemlength > 1);
+//        }
+//
+//        $scope.isString=function isString(value){
+//            return typeof value === 'string';
+//        }
+//
+//        $scope.isObject=function isObject(value){
+//
+//            return typeof value === 'object';
+//        }
+//        $scope.Storeqry=function Storeqry(value){
+//
+//            return typeof value === 'object';
+//        }
+//
+//
+//
+//        $scope.executeSearchForleftNav = function executeSearchForleftNav(strSearch){
+//            $scope.query=strSearch;
+//			 sharedProperties.setQuery(strSearch);
+//            //$scope.executeSearch();
+//        }
+//
+//        console.log($stateParams.searchid);
+//           $scope.SearchQuery=$stateParams.searchid;
+//            $scope.reverse = false;
+//            $scope.filteredItems = [];
+//            $scope.groupedItems = [];
+//            $scope.itemsPerPage = 10;
+//            $scope.pagedItems = [];
+//            $scope.currentPage = 0;
+//            $scope.itemlength=0;
+//            $scope.noofresults=0;
+//            $scope.configdata=[];
+//            $scope.results=[];
+//            $scope.datatype="";
+//            $http.get('../modules/details/config.json').success(function(data){
+//                $scope.configdata=data.Search;
+//
+//            });
+//
+//             $scope.loading = true;
+//            $http.get('http://162.249.6.50:21000/api/metadata/discovery/search?query='+$scope.SearchQuery)
+//                .success(function (data) {
+//                    $scope.iserror=false;
+//                    $scope.entities=angular.fromJson(data.results.rows);
+//                      $scope.loading = false;
+//                    if(!$scope.isUndefined($scope.entities)){
+//                        $scope.itemlength=$scope.entities.length;
+//                        	$scope.noofresults=1;
+//                        $scope.datatype=data.results.dataType.typeName;
+//
+//                        var i=0;
+//                        angular.forEach($scope.configdata, function(values, key) {
+//                            if (key === data.results.dataType.typeName) {
+//                                i=1;
+//                            }
+//                        });
+//                            if(i===0){
+//                                var tempdataType="__tempQueryResultStruct";
+//                                //console.log(tempdataType);
+//                                var datatype1=$scope.datatype.substring(0,tempdataType.length);
+//                               // console.log(datatype1);
+//                                if(datatype1===tempdataType){
+//                                    $scope.datatype=tempdataType;
+//                                }
+//
+//                            }
+//
+//                        sharedProperties.setProperty($scope.datatype);
+//                    }
+//
+//               //     console.log($scope.entities);
+//
+//
+//                    // to get value based on config but not use (used in view directly)
+//                  /*  angular.forEach($scope.configdata, function(values, key) {
+//                        if(key===data.results.dataType.typeName)
+//                        {
+//                            $scope.entities.forEach(function(k,v){
+//                                    angular.forEach(values, function(value, key1) {
+//                                        var obj = {};
+//                                        obj[value] = k[value];
+//                                    $scope.results.push(obj);
+//                                });
+//                            });
+//                        }
+//                    });
+//                    */
+//
+//                    $scope.currentPage = 0;
+//                    // now group by pages
+//                    $scope.groupToPages();
+//
+//
+//                })
+//                 .error(function () {
+//                    // alert("Sorry No response");
+////                     $scope.iserror=true;
+////                     $scope.error=e;
+//                    $scope.noofresults=1;
+//
+//
+//                 });
+//
+////click value to textbox
+//
+//       $scope.updateVars = function (event) {
+//        var appElement = document.querySelector('[ng-model=query]');
+//    var $scope = angular.element(appElement).scope();
+//     $scope.query = angular.element(event.target).text();
+//    // $scope.$apply(function() {
+//    //   $scope.query = angular.element(event.target).text();
+//    // });
+//
+//
+//         console.log("test");
+//        console.log(angular.element(event.target).text());
+//         console.log("testingFact");
+//    };
+//    //click value to textbox
+//        $scope.getGuidName=function getGuidName(val){
+//            $http.get('http://162.249.6.50:21000/api/metadata/entities/'+val)
+//                .success(function (data) {
+//                    $scope.iserror1=false;
+//                    if(!$scope.isUndefined(data.results)){
+//                        $scope.gname=angular.fromJson(data.results);
+//                        console.log(angular.fromJson(data.results));
+//                        // $scope.gname=data.results.name;
+//                    }
+//
+//                })
+//                    .error(function () {
+//                                       //  alert("Sorry No response");
+//
+//                                     });
+//            //return $scope.gname;
+//        }
+//
+//
+//        // calculate page in place
+//        $scope.groupToPages = function () {
+//            $scope.pagedItems = [];
+//
+//            for (var i = 0; i < $scope.itemlength; i++) {
+//                if (i % $scope.itemsPerPage === 0) {
+//                    $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.entities[i] ];
+//                } else {
+//                    $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.entities[i]);
+//                }
+//            }
+//
+//        };
+//
+//        $scope.range = function (start, end) {
+//            var ret = [];
+//            if (!end) {
+//                end = start;
+//                start = 0;
+//            }
+//            for (var i = start; i < end; i++) {
+//                ret.push(i);
+//            }
+//            return ret;
+//        };
+//
+//        $scope.prevPage = function () {
+//            if ($scope.currentPage > 0) {
+//                $scope.currentPage--;
+//            }
+//        };
+//
+//        $scope.nextPage = function () {
+//            if ($scope.currentPage < $scope.pagedItems.length - 1) {
+//                $scope.currentPage++;
+//            }
+//        };
+//
+//
+//        $scope.firstPage = function () {
+//            if ($scope.currentPage > 0) {
+//                $scope.currentPage = 0;
+//            }
+//        };
+//
+//        $scope.lastPage = function () {
+//            if ($scope.currentPage < $scope.pagedItems.length - 1) {
+//                $scope.currentPage = $scope.pagedItems.length-1;
+//            }
+//        };
+//        $scope.setPage = function () {
+//            $scope.currentPage = this.n;
+//        };
+//
+//    }]
+//);
 
 
 DgcControllers.controller("DefinitionController", ['$scope','$http', '$stateParams', 'sharedProperties','$q', function($scope, $http, $stateParams, sharedProperties, $q)
@@ -355,7 +358,7 @@ DgcControllers.controller("DefinitionController", ['$scope','$http', '$statePara
     };
 //onclick to textbox
 					$scope.getGuidName=function getGuidName(val){
-					$http.get('/api/metadata/entities/'+val)
+					$http.get('http://162.249.6.50:21000/api/metadata/entities/'+val)
 						.success(function (data) {
 						$scope.iserror1=false;
 							if(!$scope.isUndefined(data.results)){
@@ -366,7 +369,7 @@ DgcControllers.controller("DefinitionController", ['$scope','$http', '$statePara
 
 						})
 						       .error(function () {
-                                                    alert("Sorry No response");
+                                                 //   alert("Sorry No response");
 
                                                 });
 				return true;
@@ -376,7 +379,7 @@ DgcControllers.controller("DefinitionController", ['$scope','$http', '$statePara
         $scope.searchqry=sharedProperties.getQuery();
         $scope.datatype1=sharedProperties.getProperty();
 
-        $http.get('/api/metadata/entities/'+$stateParams.Id)
+        $http.get('http://162.249.6.50:21000/api/metadata/entities/'+$stateParams.Id)
                 .success(function (data) {
                     $scope.iserror1=false;
                 $scope.details=  angular.fromJson(data.results);
@@ -389,7 +392,7 @@ DgcControllers.controller("DefinitionController", ['$scope','$http', '$statePara
                 }
             })
                   .error(function () {
-                                    alert("Sorry No response");
+                                   // alert("Sorry No response");
 
 
 
@@ -397,7 +400,7 @@ DgcControllers.controller("DefinitionController", ['$scope','$http', '$statePara
 
         $scope.getSchema= function (tableName) {
 
-            $http.get('/api/metadata/lineage/hive/table/'+tableName +'/schema')
+            $http.get('http://162.249.6.50:21000/api/metadata/lineage/hive/table/'+tableName +'/schema')
                 .success(function (data) {
                     $scope.iserror1=false;
                     $scope.schema=  angular.fromJson(data.results.rows);
@@ -406,7 +409,7 @@ DgcControllers.controller("DefinitionController", ['$scope','$http', '$statePara
 
                 })
                 .error(function () {
-                                                  alert("Sorry No response");
+                                             //     alert("Sorry No response");
 
 
 
@@ -421,7 +424,7 @@ $scope.getLinegae= function (tableName) {
             var arrmyalias=[];
 			   var datatypes=[];
 			   var tags=[];
-            $http.get('/api/metadata/lineage/hive/table/'+tableName+'/outputs')
+            $http.get('http://162.249.6.50:21000/api/metadata/lineage/hive/table/'+tableName+'/outputs')
                 .success(function (data) {
                     $scope.iserror1=false;
                     $scope.lineage=  angular.fromJson(data.results.rows);
@@ -463,7 +466,7 @@ $scope.getLinegae= function (tableName) {
                             newarrvts.push(item);
                             uniquevts[item.Name] = item;
 
-							  var url="/api/metadata/entities/"+item.Name;
+							  var url="http://162.249.6.50:21000/api/metadata/entities/"+item.Name;
 							   arr.push($http.get(url));
                         }
                     });
@@ -505,7 +508,7 @@ if(arrmyalias.length>1){
 
 				  })
                 .error(function () {
-                                                  alert("Sorry No response");
+                                              //    alert("Sorry No response");
 
 
 
@@ -814,7 +817,7 @@ $scope.getLinegaeforinput= function (tableName) {
             var arrmyalias=[];
 			   var datatypes=[];
 			   var tags=[];
-            $http.get('/api/metadata/lineage/hive/table/'+tableName+'/inputs')
+            $http.get('http://162.249.6.50:21000/api/metadata/lineage/hive/table/'+tableName+'/inputs')
                 .success(function (data) {
                     $scope.iserror1=false;
                     $scope.lineage=  angular.fromJson(data.results.rows);
@@ -855,7 +858,7 @@ $scope.getLinegaeforinput= function (tableName) {
                             newarrvts.push(item);
                             uniquevts[item.Name] = item;
 
-							  var url="/api/metadata/entities/"+item.Name;
+							  var url="http://162.249.6.50:21000/api/metadata/entities/"+item.Name;
 							   arr.push($http.get(url));
 
                             //getLienageGuidName(item.Name);
@@ -901,7 +904,7 @@ if(arrmyalias.length>1){
 
 				  })
                  .error(function () {
-                                                   alert("Sorry No response");
+                                               //    alert("Sorry No response");
 
 
 
@@ -1261,7 +1264,7 @@ DgcControllers.controller("GuidController", ['$scope','$http', '$filter','$state
 $scope.getGuidName=function getGuidName(val){
 
         $scope.gnew=[];
-                    $http.get('/api/metadata/entities/'+val)
+                    $http.get('http://162.249.6.50:21000/api/metadata/entities/'+val)
                         .success(function (data) {
                         $scope.iserror1=false;
                             if(!$scope.isUndefined(data.results)){
@@ -1279,7 +1282,7 @@ $scope.getGuidName=function getGuidName(val){
 
                         })
                             .error(function () {
-                                                              alert("Sorry No response");
+                                                       //       alert("Sorry No response");
 
 
 

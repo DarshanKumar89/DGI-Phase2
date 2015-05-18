@@ -19,12 +19,13 @@
     <!--right panel-->
     <div class="col-lg-8 mrgl45">
 
-        <div>
+        <div style="margin-left:15px;margin-bottom:8px;" >
+                <br/>
 
-            <div ng-repeat="(key, value) in details" ng-if="value && (key==='name')">
-                <br/>
-                <br/>
-                <p style="font-weight:1000;font-size:18px;color:#333;"> &ensp;&ensp;&nbsp;  {{value }}</p>
+            <br/>
+            <div  class="title1" style="background-color:#F4F4F4;height:30px;" align="left" ng-repeat="(key, value) in details" ng-if="value && (key==='name')">
+
+                <p style="font-weight:1000;font-size:18px;color:#89BD3F "> &nbsp;{{value }}</p>
 
                 <!--  <h4><b>  {{value}}</b></h4> -->
 
@@ -33,20 +34,20 @@
 
 
 
-            <div ng-repeat="(key, value) in details" ng-if="value && (key==='description')">
+            <div  class="title1" style="background-color:#F4F4F4;height:30px;"  ng-repeat="(key, value) in details" ng-if="value && (key==='description')">
                 <!-- <h4> <b>{{value}} </b> </h4> -->
 
-                <p style="font-weight:bold;">  &ensp;&ensp; &nbsp;   {{value}}</p>
+                <p style="color:#89BD3F"> &nbsp;{{value}}</p>
             </div>
-            <div class="sm-txt2">
+            <!--<div class="sm-txt2">-->
 
 
-                <p ng-repeat="(keytag, valtag) in details['$traits$']">&ensp;&ensp;&nbsp;&nbsp; Tags:
-                    <a ng-click="updateDetailsVariable($event)" ui-sref="Search({ searchid: keytag })" style="color: #636364 !important;">
-                        {{keytag}} </a></p>
+                <!--<p ng-repeat="(keytag, valtag) in details['$traits$']">&ensp;&ensp;&nbsp;&nbsp; Tags:-->
+                    <!--<a ng-click="updateDetailsVariable($event)" ui-sref="Search({ searchid: keytag })" style="color: #636364 !important;">-->
+                        <!--{{keytag}} </a></p>-->
 
 
-            </div>
+            <!--</div>-->
 
         </div>
         <tabset justified="true" class="col-lg-12 greyt">
@@ -59,36 +60,38 @@
 
                     <div>
                       <!-- name and desc -->
-             
+
                   <div>
-                   
-                    <div ng-repeat="(key, value) in details" ng-if="value && (key==='name')">
+
+                    <!--<div ng-repeat="(key, value) in details" ng-if="value && (key==='name')">-->
+                      <!--<br/>-->
+                      <!--<br/>-->
+                         <!--<p style="font-weight:1000;font-size:18px;color:#333;">  {{value }}</p>-->
+
+                         <!--&lt;!&ndash;  <h4><b>  {{value}}</b></h4> &ndash;&gt;-->
+
+
+                     <!--</div>-->
+
+
+
+                     <!--<div ng-repeat="(key, value) in details" ng-if="value && (key==='description')">-->
+                          <!--&lt;!&ndash; <h4> <b>{{value}} </b> </h4> &ndash;&gt;-->
+
+                         <!--<p style="font-weight:bold;">     {{value}}</p>-->
+                     <!--</div>-->
                       <br/>
                       <br/>
-                         <p style="font-weight:1000;font-size:18px;color:#333;">  {{value }}</p>
-                        
-                         <!--  <h4><b>  {{value}}</b></h4> -->
-
-
-                     </div>
-                   
-                  
-                  
-                     <div ng-repeat="(key, value) in details" ng-if="value && (key==='description')">
-                          <!-- <h4> <b>{{value}} </b> </h4> -->
-
-                         <p style="font-weight:bold;">     {{value}}</p>
-                     </div>
                      <div class="sm-txt2">
-                       
-                                 
+
+
                                        <p ng-repeat="(keytag, valtag) in details['$traits$']">Tags:
                                        <a ng-click="updateDetailsVariable($event)" ui-sref="Search({ searchid: keytag })" style="color: #636364 !important;">
                                            {{keytag}} </a></p>
-                       
-                                    
+
+
                       </div>
-                 
+
                      </div>
             <p ><b> Additional Details</b></p>
          

@@ -19,7 +19,9 @@
     <!--right panel-->
     <div class="col-lg-8 mrgl45">
         <div class="col-lg-12">
-            <h4 class="greyt" ng-hide="isUndefined(SearchQuery)" style="font: 15px sans-serif">{{itemlength}} results found for {{SearchQuery}}</h4>
+            <h4 class="greyt" ng-show="noofresults==0" style="font: 15px sans-serif">Searching....</h4>
+            <h4 class="greyt" ng-show="noofresults!=0" style="font: 15px sans-serif">{{itemlength}} results found for {{SearchQuery}}</h4>
+
             <h4 ng-show="isUndefined(SearchQuery)">Results</h4>
         </div>
         <div class="col-lg-12 rightpanal">

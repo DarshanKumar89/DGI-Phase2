@@ -19,7 +19,9 @@
 var DgcApp = angular.module('DgcApp', [
     'ui.router',
   'DgcControllers',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'ListController',
+  'DefinitionController'
 ]);
 
 DgcApp.config(['$urlRouterProvider','$stateProvider', function($urlRouterProvider, $stateProvider) {
