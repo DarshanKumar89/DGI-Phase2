@@ -28,9 +28,11 @@
             <br/>
             <br/>
             <!--spinner loading-->
-            <center><div ng-show="loading" class="loading"><img src="../img/images.png">LOADING...</div></center>
+            <center><div ng-show="loading" class="loading"><img src="../img/images.png">Searching...</div></center>
             <!--spinner loading-->
             <!--1-->
+            <br/>
+            <div ng-show="errormessage">no response</div>
             <div class="col-lg-12 div_ex" style="margin-top:30px" ng-repeat="(key, value) in pagedItems[currentPage]">
                 <div class="row" >
 

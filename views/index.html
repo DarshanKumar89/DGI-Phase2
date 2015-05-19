@@ -64,59 +64,24 @@
 
 
         <style type="text/css">
-            .node {
-                font: 15px sans-serif;
-                opacity: 1.5;
-                stroke-width: 0.5px;
-
-            }
-            .nodeTrans{
-           position: relative;
-            float:left;
-            left:20px;
-
-            }
-            .node a{
-                text-decoration:none;
-            pointer-events: none;
-            text-anchor: middle;
-            }
-            .link {
-                stroke: #23A410;
-                stroke-opacity: 1.6;
-
-            }
-            svg { margin:20px; }
-            #mybounce  {
-            position:fixed; top:0; bottom:0; left:0; right:0
-
-
-            }
-            #suit{
-                stroke: #23A410;
-                background: #23A410;
-            }
             path.link {
-                fill: none;
-                stroke: #23A410;
-                stroke-width: 4px;
-                cursor: default;
+            fill: none;
+            stroke: #0ad835;
+            stroke-width: 2px;
             }
 
-            svg:not(.active):not(.ctrl) path.link {
-                cursor: pointer;
+            circle {
+            fill: #ccc;
+            stroke: #fff;
+            stroke-width: 1.5px;
             }
 
-            path.link.selected {
-                stroke-dasharray: 10,2;
-            }
-
-            path.link.dragline {
-                pointer-events: none;
-            }
-
-            path.link.hidden {
-                stroke-width: 0;
+            text {
+            fill: #000;
+            font: 7px sans-serif;
+            pointer-events: none;
+            font-weight: bold;
+            font-size: small;
             }
 
 

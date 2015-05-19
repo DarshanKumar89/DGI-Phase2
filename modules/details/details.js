@@ -203,807 +203,409 @@ DgcControllers.controller("DefinitionController", ['$scope','$http', '$statePara
 $scope.getLinegae= function (tableName) {
 
 //            $scope.width = 900;
-//            $scope.height = 900;
-			var arr=[];
-            var arrmyalias=[];
-			   var datatypes=[];
-			   var tags=[];
+//            $scope.heig var arr=[];
+                                 var arrmyalias={};
+                                 var datatypes=[];
+                                 var tags=[];
+                                 $scope.vts2 = [];
+                                 $scope.vts1 = [];
+
             $http.get('http://162.249.6.50:21000/api/metadata/lineage/hive/table/'+tableName+'/outputs')
                 .success(function (data) {
                     $scope.iserror1=false;
-                    $scope.lineage=  angular.fromJson(data.results.rows);
-
-                    $scope.vts = [];
-                    $scope.edges1 = [];
-                    $scope.listguid = [];
-                    angular.forEach($scope.lineage, function(lineage1){
-                    var level = 0;
-                    angular.forEach(lineage1.path, function(item, index){
-                      //  if ($scope.listguid.indexOf(index) == -1) {
-                       //     $scope.listguid.push(index);
-
-                        $scope.vts.push({"Name": item.guid,"Id" :index,"hasChild":"True","type":item.typeName});
-                        $scope.edges1.push({source: index, target: (index+1)});
-
-                       // }
-                    });
-
-                  });
-
-
-                    var newarr = [];
-                    var unique = {};
-
-                    angular.forEach($scope.edges1, function(item) {
-                        if (!unique[item.source]) {
-                            newarr.push(item);
-                            unique[item.source] = item;
-                            //console.log(newarr);
-                        }
-                    });
-
-                    var newarrvts = [];
-                    var uniquevts = {};
-
-                    angular.forEach($scope.vts, function(item) {
-                        if (!uniquevts[item.Name]) {
-                            newarrvts.push(item);
-                            uniquevts[item.Name] = item;
-
-							  var url="http://162.249.6.50:21000/api/metadata/entities/"+item.Name;
-							   arr.push($http.get(url));
-                        }
-                    });
-
-
-					 $q.all(arr).then(function(ret){
-                    //console.log("Result guid list length="+ret.length);
-                    for(var i=0;i<ret.length;i++){
-                        var f=angular.fromJson(ret[i].data.results);
-                        //console.log(i+"Their Names="+angular.toJson(f));
-                        //console.log(i+"Their Names="+f.name);
-                        arrmyalias[i]=f.name;
-
-								datatypes[i]=f['$typeName$'];
-
-						if(f['$typeName$']==="Table")
-						{
-							angular.forEach(f['$traits$'], function(key, value) {
-								tags[i]=value;
-
-								  });
-						}
-						else{
-								tags[i]=f.queryText;
-						}
-
-
-                    }
-if(arrmyalias.length>1){
-                                                 doMakeStaticJson(arrmyalias);
-                                             }
-                                             else{
-                                                 $scope.errornodata="";
-                                             }
-//                    loadjsonRealv2(arrmyalias);
-                   // doMakeStaticJson(arrmyalias);
-
-                });
-
-				  })
-                .error(function () {
-                                              //    alert("Sorry No response");
-
-
-
-                                              });
-            function doMakeStaticJson(arrmyalias){
-
-                var toparr=[];
-			console.log(arrmyalias.length);
-                var rootobj=new Object();
-                rootobj.name=arrmyalias[0];
-                rootobj.alias=arrmyalias[0];
-				rootobj.query=tags[0];
-				rootobj.datatype=datatypes[0];
-                rootobj.parent="null";
-
-                toparr[0]=rootobj;
-
-//start first object
-                var child1obj=new Object();
-                child1obj.alias=arrmyalias[1];
-                child1obj.name=arrmyalias[1];
-				child1obj.query=tags[1];
-				child1obj.datatype=datatypes[1];
-                child1obj.parent=arrmyalias[0];
-
-                    //start
-                    var childsub1obj=new Object();
-                    childsub1obj.name=arrmyalias[2];
-                    childsub1obj.alias=arrmyalias[2];
-					   childsub1obj.query=tags[2];
-					   childsub1obj.datatype=datatypes[2];
-                    childsub1obj.parent=arrmyalias[1];
-					if(arrmyalias.length>2){
-                    var arraychildren1=[];
-                    arraychildren1.push(childsub1obj);
-                    child1obj.children=arraychildren1;
-					}
-                        //start
-                        var childsub2obj=new Object();
-                        childsub2obj.name=arrmyalias[3];
-                        childsub2obj.alias=arrmyalias[3];
-							childsub2obj.query=tags[3];
-							childsub2obj.datatype=datatypes[3];
-                        childsub2obj.parent=arrmyalias[2];
-						if(arrmyalias.length>3){
-                        var arraychildren2=[];
-                        arraychildren2.push(childsub2obj);
-                        childsub1obj.children=arraychildren2;
-						}
-
-                            //start
-                            var childsub3obj=new Object();
-                            childsub3obj.name=arrmyalias[4];
-                            childsub3obj.alias=arrmyalias[4];
-							childsub3obj.query=tags[4];
-							childsub3obj.datatype=datatypes[4];
-                            childsub3obj.parent=arrmyalias[3];
-							if(arrmyalias.length>4){
-                            var arraychildren3=[];
-                            arraychildren3.push(childsub3obj);
-                            childsub2obj.children=arraychildren3;
-							}
-
-///end first objects
-
-
-
-                /*var arraychildren2=[];
-                arraychildren2.push(child1obj2);
-//                arraychildren2.push(childsub2obj2);
-
-
-                child1obj2.children=arraychildren2;
-
-
-                //end second objects
-                */
-
-                var array1=[];
-                array1[0]=child1obj;
-//                array1[1]=child1obj2;
+                     $scope.lineage=  angular.fromJson(data.results.rows);
+                                        console.log($scope.lineage);
+
+                                        $scope.edges1 = [];
+                                        $scope.listguid = [];
+                    						var ids = {},
+                                                tags={},
+                                                types={},
+                                                reqs = [];
+                                        angular.forEach($scope.lineage, function(lineage1){
+                                            var level = 0;
+                                            for(var i=0;i<lineage1.path.length;i++){
+                                                // unique check and then http get
+                                                var req = $http.get("http://162.249.6.50:21000/api/metadata/entities/"+lineage1.path[i].guid);
+
+                                                req.then(function(name){
+                                                    var f=angular.fromJson(name.data.results);
+                                                    ids[name.data['GUID']] = f['name'];
+                                                    types[name.data['GUID']] = f['$typeName$'];
+
+                                                    if(f['$typeName$']==="Table")
+                                                    {
+                                                        var tag1;
+                                                        angular.forEach(f['$traits$'], function(key, value) {
+                                                            tags[name.data['GUID']]=value;
+                                                            tag1=value;
+                                                        });
+                                                    }
+                                                    else{
+                                                        tags[name.data['GUID']]=f.queryText;
+                                                    }
+
+                                                });
+                                                reqs.push(req);
+                                            }
+                                        });
+
+
+                                       $q.all(reqs).then(function(){
+                                            angular.forEach($scope.lineage, function(lineage1){
+                                                var level = 0;
+                                                for(var i=0;i<lineage1.path.length-1;i++){
+                                                  var  sourceGuid = lineage1.path[i].guid;
+                                                    var targetGuid = lineage1.path[i+1].guid;
+
+                                                    $scope.vts2.push({
+                                                        "source": ids[sourceGuid],
+                                                        "target": ids[targetGuid],
+                                                        "sourcetype":types[sourceGuid],
+                                                        "targettype":types[targetGuid],
+                                                        "sourcetags":tags[sourceGuid],
+                                                        "targettags":tags[targetGuid]
+                                                    });
+                                                }
+
+                                            });
+
+                                            var nodes = {};
+                                            var links=$scope.vts2;
+                                            // Compute the distinct nodes from the links.
+                                            links.forEach(function(link) {
+                                                link.source = nodes[link.source] ||
+                                                        (nodes[link.source] = {name: link.source,type:link.sourcetype,tags:link.sourcetags});
+                                                link.target = nodes[link.target] ||
+                                                        (nodes[link.target] = {name: link.target,type:link.targettype,tags:link.targettags});
+
+                                            });
+                                            console.log(links);
+                                            var width = 600,
+                                                    height = 500;
+
+                                            var force = d3.layout.force()
+
+                                                    .nodes(d3.values(nodes))
+                                                    .links(links)
+                                                    .size([width, height])
+                                                    .alpha(0)
+
+                                                    .linkDistance(130)
+                                                    .charge(-130)
+                                                    .on("tick", tick)
+                                                    .start();
+
+
+
+
+                                            var svg = d3.select("svg")
+                                                    .attr("width", width)
+                                                    .attr("height", height);
+
+                                               var tip = d3.tip()
+                                                    .attr('class', 'd3-tip')
+                                                     .offset([-10, 0])
+                                                      .html(function(d) {
+                                                        return "<pre class='alert alert-success' style='max-width:400px;'>" + d.tags + "</pre>";
+                                                           });
+
+                                                           if(svg){
+                                                             svg.call(tip);
+                                                                 }
+                                                   var link = svg.selectAll(".link");
+
+                    // build the arrow.
+                                            svg.append("svg:defs").selectAll("marker")
+                                                    .data(["end"])      // Different link/path types can be defined here
+                                                    .enter().append("svg:marker")    // This section adds in the arrows
+                                                    .attr("id", String)
+                                                    .attr("viewBox", "0 -5 10 10")
+                                                    .attr("refX", 21)
+                                                    .attr("refY", -3)
+                                                    .attr("markerWidth", 6)
+                                                    .attr("markerHeight", 6)
+                                                    .attr("orient", "auto")
+                                                    .append("svg:path")
+                                                    .attr("d", "M0,-5L10,0L0,5");
+
+                                            svg.append("svg:pattern").attr("id","processICO").attr("width",1).attr("height",1)
+                                                    .append("svg:image").attr("xlink:href","../img/process.png").attr("x",-5.5).attr("y",-4).attr("width",42).attr("height",42);
+                                            svg.append("svg:pattern").attr("id","textICO").attr("width",1).attr("height",1)
+                                                    .append("svg:image").attr("xlink:href","../img/tableicon.png").attr("x",2).attr("y",2).attr("width",25).attr("height",25);
+
+                    // add the links and the arrows
+                                            var path = svg.append("svg:g").selectAll("path")
+                                                    .data(force.links())
+                                                    .enter().append("svg:path")
+                    //    .attr("class", function(d) { return "link " + d.type; })
+                                                    .attr("class", "link")
+                                                    .attr("marker-end", "url(#end)");
+
+
+
+
+                    // define the nodes
+                                            var node = svg.selectAll(".node")
+                                                    .data(force.nodes())
+                                                    .enter().append("g")
+                                                    .attr("class", "node")
+                                                     .on("mouseover", tip.show)
+                                                    .on("mouseout", tip.hide)
+                                                    .call(force.drag);
+
+                    // add the nodes
+                                            node.append("circle")
+                                                    .attr("r", 15).style("fill", function(d) {
+                                                        if(d.type=="Table"){
+                                                            console.log(d);
+                                                            return "url('#textICO')";
+
+                                                        }else{
+                                                            console.log(d);
+                                                            return "url('#processICO')";
+                                                        }
+                                                        return colors(i);
+                                                    });
+                    // add the text
+                                            node.append("text")
+                                                    .attr("x", 12)
+                                                    .attr("dy", ".35em")
+                                                    .text(function(d) { return d.name; });
+
+
+
+                    // add the curvy lines
+                                            function tick() {
+                                                path.attr("d", function(d) {
+                                                    var dx = d.target.x - d.source.x,
+                                                            dy = d.target.y - d.source.y,
+                                                            dr = Math.sqrt(dx * dx + dy * dy);
+                                                    return "M" +
+                                                            d.source.x + "," +
+                                                            d.source.y + "A" +
+                                                            dr + "," + dr + " 0 0,1 " +
+                                                            d.target.x + "," +
+                                                            d.target.y;
+                                                });
+
+                                                node
+                                                        .attr("transform", function(d) {
+                                                            return "translate(" + d.x + "," + d.y + ")"; });
+                                            }
+
+
+                                        console.log($scope.vts2);
+
+                                        });
+
+                    				  })
+                                    .error(function () {
+                                    alert("Sorry No response");
+                                 });
 
-
-                rootobj.children=array1;
-
-
-                //console.info("MITH SEE THIS="+angular.toJson(toparr));
-
-                root = toparr[0];
-		console.log(root);
-                update(root);
-            }
-
-
-                    //Width and height
-                 var width = 700,
-                     height = 500,
-                     root;
-//image intitializer
- var mitharr=["../img/tableicon.png","../img/process.png","../img/tableicon.png","../img/process.png","../img/tableicon.png"];
-
-//getlinageoutput
-
-                 var force = d3.layout.force()
-                     .gravity(0)
-                     .friction(0.7)
-                     .charge(-50)
-					 .linkDistance(130)
-					 .size([width, height])
-                      .on("tick", tick);
-
-                 var svg = d3.select("svg")
-//                 .attr("transform", "translate(" + (width/2) +
-//                          "," + (height/2) + ")")
-                         .attr("id", "playgraph")
-                                     //better to keep the viewBox dimensions with variables
-
-                          .attr('transform-origin', '-419 -530')
-                          .attr("viewBox", "10 -300 700 1000")
-                            .attr("preserveAspectRatio", "xMidYMid meet");
-//                               .append("g")
-//                               .attr("transform", "translate(" + d.x + "," + d.y +") rotate(180) scale(-1, -1)");
-
-
-//                 .attr("preserveAspectRatio", "xMidYMid slice");
-
-                 var link = svg.selectAll(".link"),
-                     node = svg.selectAll(".node");
-
-						var tip = d3.tip()
-                        .attr('class', 'd3-tip')
-                        .offset([-10, 0])
-                        .html(function(d) {
-                            return "<pre class='alert alert-success' style='max-width:400px;'>" + d.query + "</pre>";
-                        });
-                    svg.call(tip);
-
-                        function update(source) {
- var nodes = flatten(root),
-      links = d3.layout.tree().links(nodes);
-
-  // Restart the force layout.
-  force
-      .nodes(nodes)
-      .links(links)
-
-      .start();
-
-  // Update links.
-  link = link.data(links, function(d) { return d.target.id; });
-
-  link.exit().remove();
-
-  link.enter().insert("line", ".node")
-      .attr("class", "link");
-
-  // Update nodes.
-  node = node.data(nodes, function(d) { return d.id; });
-
-  node.exit().remove();
-
-    svg.append("svg:pattern").attr("id","processICO").attr("width",1).attr("height",1)
-                        .append("svg:image").attr("xlink:href","../img/process.png").attr("x",-5.5).attr("y",-4).attr("width",42).attr("height",42);
-                    svg.append("svg:pattern").attr("id","textICO").attr("width",1).attr("height",1)
-                        .append("svg:image").attr("xlink:href","../img/tableicon.png").attr("x",2).attr("y",2).attr("width",25).attr("height",25);
-
-
-//arrow
- svg.append("svg:defs").append("svg:marker").attr("id", "arrow").attr("viewBox", "0 0 10 10").attr("refX", 26).attr("refY", 5).attr("markerUnits", "strokeWidth").attr("markerWidth", 13).attr("markerHeight", 13).attr("orient", "auto").append("svg:path").attr("d", "M 0 0 L 10 5 L 0 10 z");
-//arrow
-  var nodeEnter = node.enter().append("g")
-      .attr("class", "nodeTrans")
-	  .on("mouseover", tip.show)
-      .on("mouseout", tip.hide)
-      .call(force.drag);
-
-
-
-
-  nodeEnter.append("circle")
-      .attr("r", function(d) { return 15; });
-
-    link.attr("marker-end", "url(#arrow)"); //also added attribute for arrow at end
-
-  nodeEnter.append("text")
-      .style("text-anchor", "middle")
-.attr('font-family', 'Roboto Slab')
-.style("font-size","20px")
-      .attr("dy", "-1em")
-
-       .attr("text-anchor", function(d) {
-      		  return d.children || d._children ? "end" : "start"; })
-      	  .text(function(d) {
-                                      return d.alias;
-                                      //return d.name;
-                              })
-
-      	  .style("fill-opacity", 1);
-
-
-// nodeEnter.select("circle")
-//      .attr("xlink:href", function(d) {
-//                                            //return d.icon;
-//                                            return mitharr[d.depth];
-//                                      })
-//      .attr("x", "-12px")
-//      .attr("y", "-12px")
-//      .attr("width", "24px")
-//      .attr("height", "24px");
-
-
-  node.select("circle")
-//    .attr("xlink:href", function(d) {
-//                                              //return d.icon;
-//                                              return mitharr[d.depth];
-//                                        })
-      .style("fill", function(d, i) {
-                               if(d.datatype==="Table"){
-                                return "url('#textICO')";
-
-                            }else{
-                                 return "url('#processICO')";
                             }
-                            return colors(i);
-                        });
-//force.stop();
-//force.resume();
-
-}
-
-//force.stop();
-function tick() {
-  node[0].x = width / 10;
-    node[0].y = height / 10;
-  link.attr("x1", function(d) { return d.source.x; })
-      .attr("y1", function(d) { return d.source.y; })
-      .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; });
-
-
-    node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")  " });
-
-
-
-}
-
-//node[0].x = width / 2;
-//    node[1].y = height / 2;
-d3.select(window).on('resize', update);
-
-function color(d) {
-  return d._children ? "#3182bd" // collapsed package
-      : d.children ? "#c6dbef" // expanded package
-      : "#fd8d3c"; // leaf node
-}
-
-// Toggle children on click.
-function click(d) {
-  if (d3.event.defaultPrevented) return; // ignore drag
-  if (d.children) {
-    d._children = d.children;
-    d.children = null;
-  } else {
-    d.children = d._children;
-    d._children = null;
-  }
-  update();
-
-}
-
-// Returns a list of all nodes  the root.
-function flatten(root) {
-  var nodes = [], i = 0;
-
-  function recurse(node) {
-    if (node.children) node.children.forEach(recurse);
-    if (!node.id) node.id = ++i;
-    nodes.push(node);
-  }
-
-  recurse(root);
-  return nodes;
-
-}
-
-
-//
-//                })
-//                .error(function (e) {
-//                    $scope.iserror1=true;
-//                    $scope.error1=e;
-//                });
-
-
-        }
-
-
-
 
 
 $scope.getLinegaeforinput= function (tableName) {
 
 //            $scope.width = 900;
 //            $scope.height = 900;
-			var arr=[];
-            var arrmyalias=[];
-			   var datatypes=[];
-			   var tags=[];
+		var arrmyalias1={};
+                                         var datatypes1=[];
+                                         var tags1=[];
+                                         $scope.vtsinput = [];
+                                         $scope.vts1 = [];
             $http.get('http://162.249.6.50:21000/api/metadata/lineage/hive/table/'+tableName+'/inputs')
                 .success(function (data) {
                     $scope.iserror1=false;
-                    $scope.lineage=  angular.fromJson(data.results.rows);
-
-                    $scope.vts = [];
-                    $scope.edges1 = [];
-                    $scope.listguid = [];
-                    angular.forEach($scope.lineage, function(lineage1){
-                    var level = 0;
-                    angular.forEach(lineage1.path, function(item, index){
-                      //  if ($scope.listguid.indexOf(index) == -1) {
-                       //     $scope.listguid.push(index);
-
-                        $scope.vts.push({"Name": item.guid,"Id" :index,"hasChild":"True","type":item.typeName});
-                        $scope.edges1.push({source: index, target: (index+1)});
-
-                       // }
-                    });
-
-                  });
-
-                    var newarr = [];
-                    var unique = {};
-
-                    angular.forEach($scope.edges1, function(item) {
-                        if (!unique[item.source]) {
-                            newarr.push(item);
-                            unique[item.source] = item;
-                            //console.log(newarr);
-                        }
-                    });
-
-                    var newarrvts = [];
-                    var uniquevts = {};
-
-                    angular.forEach($scope.vts, function(item) {
-                        if (!uniquevts[item.Name]) {
-                            newarrvts.push(item);
-                            uniquevts[item.Name] = item;
-
-							  var url="http://162.249.6.50:21000/api/metadata/entities/"+item.Name;
-							   arr.push($http.get(url));
-
-                            //getLienageGuidName(item.Name);
-
-                        }
-                    });
+                   $scope.lineage1=  angular.fromJson(data.results.rows);
+                                                           console.log($scope.lineage1);
 
 
-					 $q.all(arr).then(function(ret){
-                    //console.log("Result guid list length="+ret.length);
-                    for(var i=0;i<ret.length;i++){
-                        var f=angular.fromJson(ret[i].data.results);
-                        //console.log(i+"Their Names="+angular.toJson(f));
-                        //console.log(i+"Their Names="+f.name);
-                        arrmyalias[i]=f.name;
+                                                           $scope.listguid = [];
+                                       						var ids = {},
+                                                                   tags={},
+                                                                   types={},
+                                                                   reqs = [];
+                                                           angular.forEach($scope.lineage1, function(lineage1){
+                                                               var level = 0;
+                                                               for(var i=0;i<lineage1.path.length;i++){
+                                                                   // unique check and then http get
+                                                                   var req = $http.get("http://162.249.6.50:21000/api/metadata/entities/"+lineage1.path[i].guid);
 
-								datatypes[i]=f['$typeName$'];
+                                                                   req.then(function(name){
+                                                                       var f=angular.fromJson(name.data.results);
+                                                                       ids[name.data['GUID']] = f['name'];
+                                                                       types[name.data['GUID']] = f['$typeName$'];
 
-						if(f['$typeName$']==="Table")
-						{
-							angular.forEach(f['$traits$'], function(key, value) {
-								tags[i]=value;
-							   console.log(value);
-								  });
-						}
-						else{
-								tags[i]=f.queryText;
-								   console.log(f.queryText);
-						}
+                                                                       if(f['$typeName$']==="Table")
+                                                                       {
+                                                                           var tag1;
+                                                                           angular.forEach(f['$traits$'], function(key, value) {
+                                                                               tags[name.data['GUID']]=value;
+                                                                               tag1=value;
+                                                                           });
+                                                                       }
+                                                                       else{
+                                                                           tags[name.data['GUID']]=f.queryText;
+                                                                       }
+
+                                                                   });
+                                                                   reqs.push(req);
+                                                               }
+                                                           });
 
 
-                    }
-if(arrmyalias.length>1){
-                                                 doMakeStaticJson(arrmyalias);
+                                                          $q.all(reqs).then(function(){
+                                                               angular.forEach($scope.lineage1, function(lineage1){
+                                                                   var level = 0;
+                                                                   for(var i=0;i<lineage1.path.length-1;i++){
+                                                                     var  sourceGuid = lineage1.path[i].guid;
+                                                                       var targetGuid = lineage1.path[i+1].guid;
+
+                                                                       $scope.vtsinput.push({
+                                                                           "source": ids[sourceGuid],
+                                                                           "target": ids[targetGuid],
+                                                                           "sourcetype":types[sourceGuid],
+                                                                           "targettype":types[targetGuid],
+                                                                           "sourcetags":tags[sourceGuid],
+                                                                           "targettags":tags[targetGuid]
+                                                                       });
+                                                                   }
+
+                                                               });
+
+                                                               var nodes = {};
+                                                               var links=$scope.vtsinput;
+                                                               // Compute the distinct nodes from the links.
+                                                               links.forEach(function(link) {
+                                                                   link.source = nodes[link.source] ||
+                                                                           (nodes[link.source] = {name: link.source,type:link.sourcetype,tags:link.sourcetags});
+                                                                   link.target = nodes[link.target] ||
+                                                                           (nodes[link.target] = {name: link.target,type:link.targettype,tags:link.targettags});
+
+                                                               });
+                                                               console.log(links);
+                                                               var width = 600,
+                                                                       height = 500;
+
+                                                               var force = d3.layout.force()
+                                                                       .nodes(d3.values(nodes))
+                                                                       .links(links)
+                                                                       .size([width, height])
+                                                                       .linkDistance(130)
+                                                                       .charge(-100)
+                                                                       .on("tick", tick)
+                                                                       .start();
+
+                                                               var svg = d3.select("svg1").append("svg")
+                                                                       .attr("width", width)
+                                                                       .attr("margin-left", "-500px")
+                                                                       .attr("height", height);
+
+
+                                                                var tip = d3.tip()
+                                                               .attr('class', 'd3-tip')
+                                                               .offset([-10, 0])
+                                                               .html(function(d) {
+                                                                   return "<pre class='alert alert-success' style='max-width:400px;'>" + d.tags + "</pre>";
+                                                               });
+
+                                             if(svg){
+                                                svg.call(tip);
                                              }
-                                             else{
-                                                 $scope.errornodata1="";
-                                             }
-//                    loadjsonRealv2(arrmyalias);
-                   // doMakeStaticJson(arrmyalias);
-
-                });
-
-				  })
-                 .error(function () {
-                                               //    alert("Sorry No response");
 
-
-
-                                               });
-
-            function doMakeStaticJson(arrmyalias){
-
-                var toparr=[];
-
-                var rootobj=new Object();
-                rootobj.name=arrmyalias[0];
-                rootobj.alias=arrmyalias[0];
-				rootobj.query=tags[0];
-				rootobj.datatype=datatypes[0];
-                rootobj.parent="null";
-
-                toparr[0]=rootobj;
-
-//start first object
-                var child1obj=new Object();
-                child1obj.alias=arrmyalias[1];
-                child1obj.name=arrmyalias[1];
-				child1obj.query=tags[1];
-				child1obj.datatype=datatypes[1];
-                child1obj.parent=arrmyalias[0];
-
-                    //start
-                    var childsub1obj=new Object();
-                    childsub1obj.name=arrmyalias[2];
-                    childsub1obj.alias=arrmyalias[2];
-					   childsub1obj.query=tags[2];
-					   childsub1obj.datatype=datatypes[2];
-                    childsub1obj.parent=arrmyalias[1];
-
-					if(arrmyalias.length>2){
-                    var arraychildren1=[];
-                    arraychildren1.push(childsub1obj);
-					console.log(arraychildren1);
-                    child1obj.children=arraychildren1;
-					}
-                        //start
-                        var childsub2obj=new Object();
-                        childsub2obj.name=arrmyalias[3];
-                        childsub2obj.alias=arrmyalias[3];
-						childsub2obj.query=tags[3];
-						childsub2obj.datatype=datatypes[3];
-						if(datatypes[2]==datatypes[3]){
-                        childsub2obj.parent=arrmyalias[1];
-						}else{
-						childsub2obj.parent=arrmyalias[2];
-						}
-						if(arrmyalias.length>3){
-                        var arraychildren2=[];
-                        arraychildren2.push(childsub2obj);
-
-								if(datatypes[2]==datatypes[3]){
-									child1obj.children.push(childsub2obj);
-								}else{
-								childsub1obj.children=arraychildren2;
-								}
-								console.log(child1obj);
-						}
-
-                            //start
-                            var childsub3obj=new Object();
-                            childsub3obj.name=arrmyalias[4];
-                            childsub3obj.alias=arrmyalias[4];
-							childsub3obj.query=tags[4];
-							childsub3obj.datatype=datatypes[4];
-                            childsub3obj.parent=arrmyalias[3];
-
-								if(arrmyalias.length>4){
-                            var arraychildren3=[];
-                            arraychildren3.push(childsub3obj);
-                            childsub2obj.children=arraychildren3;
-								}
-
-
-///end first objects
-
-
-
-                /*var arraychildren2=[];
-                arraychildren2.push(child1obj2);
-//                arraychildren2.push(childsub2obj2);
-
-
-                child1obj2.children=arraychildren2;
-
-
-                //end second objects
-                */
-
-                var array1=[];
-                array1[0]=child1obj;
-//                array1[1]=child1obj2;
-
-
-                rootobj.children=array1;
-
-
-                //console.info("MITH SEE THIS="+angular.toJson(toparr));
-
-                root = toparr[0];
-
-                update(root);
-            }
-
-
-                    //Width and height
-                 var width = 700,
-                     height = 500,
-                     root;
-//image intitializer
- var mitharr=["../img/tableicon.png","../img/process.png","../img/tableicon.png","../img/process.png","../img/tableicon.png"];
-
-
-
-                 var force = d3.layout.force()
-
-//                     .friction(0.7)
-                   .gravity(0.3)
-                   		.charge(-1000)
-					 .linkDistance(170)
-					 .size([width, height])
-                      .on("tick", tick);
-
-                 var svg = d3.select("svg1").append("svg")
-//                 .attr("transform", "translate(" + (width/2) +
-//                          "," + (height/2) + ")")
-                         .attr("id", "playgraph")
-                                     //better to keep the viewBox dimensions with variables
-
-                          .attr('transform-origin', '-419 -530')
-                          .attr("viewBox", "100 -200 700 1000")
-                            .attr("preserveAspectRatio", "xMidYMid meet");
-//                               .append("g")
-//                               .attr("transform", "translate(" + d.x + "," + d.y +") rotate(180) scale(-1, -1)");
-
-
-//                 .attr("preserveAspectRatio", "xMidYMid slice");
-
-                 var link = svg.selectAll(".link"),
-                     node = svg.selectAll(".node");
-
-						var tip = d3.tip()
-                        .attr('class', 'd3-tip')
-                        .offset([-10, 0])
-                        .html(function(d) {
-                            return "<pre class='alert alert-success' style='max-width:400px;'>" + d.query + "</pre>";
-                        });
-
-						if(svg){
-							  svg.call(tip);
-						}
-
-
-                        function update(source) {
- var nodes = flatten(root),
-      links = d3.layout.tree().links(nodes);
-
-  // Restart the force layout.
-  force
-      .nodes(nodes)
-      .links(links)
-
-      .start();
-
-  // Update links.
-  link = link.data(links, function(d) { return d.target.id; });
-
-  link.exit().remove();
-
-  link.enter().insert("line", ".node")
-      .attr("class", "link");
-
-  // Update nodes.
-  node = node.data(nodes, function(d) { return d.id; });
-
-  node.exit().remove();
-
-    svg.append("svg:pattern").attr("id","processICO1").attr("width",1).attr("height",1)
-                        .append("svg:image").attr("xlink:href","../img/process.png").attr("x",-5.5).attr("y",-4).attr("width",42).attr("height",42);
-                    svg.append("svg:pattern").attr("id","textICO1").attr("width",1).attr("height",1)
-                        .append("svg:image").attr("xlink:href","../img/tableicon.png").attr("x",2).attr("y",2).attr("width",25).attr("height",25);
-
-
-//arrow
- svg.append("svg:defs").append("svg:marker").attr("id", "arrow1").attr("viewBox", "0 0 10 10").attr("refX", 30).attr("refY", 5).attr("markerUnits", "strokeWidth").attr("markerWidth", 10).attr("markerHeight", 10).attr("orient", "auto").append("svg:path").attr("d", "M 0 0 L 10 5 L 0 10 z");
-//arrow
-  var nodeEnter = node.enter().append("g")
-      .attr("class", "nodeTrans")
-	  .on("mouseover", tip.show)
-      .on("mouseout", tip.hide)
-      .call(force.drag);
-
-
-
-
-  nodeEnter.append("circle")
-      .attr("r", function(d) { return 15; });
-
-    link.attr("marker-end", "url(#arrow1)"); //also added attribute for arrow at end
-
-  nodeEnter.append("text")
-      .style("text-anchor", "middle")
-.attr('font-family', 'Roboto Slab')
-
-      .attr("dy", "-1em")
-
-       .attr("text-anchor", function(d) {
-      		  return d.children || d._children ? "end" : "start"; })
-      	  .text(function(d) {
-                                      return d.alias;
-                                      //return d.name;
-                              })
-
-      	  .style("fill-opacity", 1);
-
-
-// nodeEnter.select("circle")
-//      .attr("xlink:href", function(d) {
-//                                            //return d.icon;
-//                                            return mitharr[d.depth];
-//                                      })
-//      .attr("x", "-12px")
-//      .attr("y", "-12px")
-//      .attr("width", "24px")
-//      .attr("height", "24px");
-
-
-  node.select("circle")
-//    .attr("xlink:href", function(d) {
-//                                              //return d.icon;
-//                                              return mitharr[d.depth];
-//                                        })
-      .style("fill", function(d) {
-                            if(d.datatype==="Table"){
-                                return "url('#textICO1')";
-
-                            }else{
-                                 return "url('#processICO1')";
-                            }
-                            return colors(i);
-                        });
-//force.stop();
-//force.resume();
-
-}
-
-//force.stop();
-function tick() {
-
-  node[0].x = width / 10;
-    node[0].y = height / 10;
-  link.attr("x1", function(d) { return d.source.x; })
-      .attr("y1", function(d) { return d.source.y; })
-      .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; });
-
-
-    node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")  " });
-
-
-}
-
-//node[0].x = width / 2;
-//    node[1].y = height / 2;
-d3.select(window).on('resize', update);
-
-function color(d) {
-  return d._children ? "#3182bd" // collapsed package
-      : d.children ? "#c6dbef" // expanded package
-      : "#fd8d3c"; // leaf node
-}
-
-// Toggle children on click.
-function click(d) {
-  if (d3.event.defaultPrevented) return; // ignore drag
-  if (d.children) {
-    d._children = d.children;
-    d.children = null;
-  } else {
-    d.children = d._children;
-    d._children = null;
-  }
-  update();
-
-}
-
-// Returns a list of all nodes  the root.
-function flatten(root) {
-  var nodes = [], i = 0;
-
-  function recurse(node) {
-    if (node.children) node.children.forEach(recurse);
-    if (!node.id) node.id = ++i;
-    nodes.push(node);
-  }
-
-  recurse(root);
-  return nodes;
-
-}
-
-
-//
-//                })
-//                .error(function (e) {
-//                    $scope.iserror1=true;
-//                    $scope.error1=e;
-//                });
-
-
-        }
+                                       // build the arrow.
+                                                               svg.append("svg:defs").selectAll("marker")
+                                                                       .data(["end"])      // Different link/path types can be defined here
+                                                                       .enter().append("svg:marker")    // This section adds in the arrows
+                                                                       .attr("id", String)
+                                                                       .attr("viewBox", "0 -5 10 10")
+                                                                       .attr("refX", 21)
+                                                                       .attr("refY", -3)
+                                                                       .attr("markerWidth", 6)
+                                                                       .attr("markerHeight", 6)
+                                                                       .attr("orient", "auto")
+                                                                       .append("svg:path")
+                                                                       .attr("d", "M0,-5L10,0L0,5");
+
+                                                               svg.append("svg:pattern").attr("id","processICO").attr("width",1).attr("height",1)
+                                                                       .append("svg:image").attr("xlink:href","../img/process.png").attr("x",-5.5).attr("y",-4).attr("width",42).attr("height",42);
+                                                               svg.append("svg:pattern").attr("id","textICO").attr("width",1).attr("height",1)
+                                                                       .append("svg:image").attr("xlink:href","../img/tableicon.png").attr("x",2).attr("y",2).attr("width",25).attr("height",25);
+
+                                       // add the links and the arrows
+                                                               var path = svg.append("svg:g").selectAll("path")
+                                                                       .data(force.links())
+                                                                       .enter().append("svg:path")
+                                       //    .attr("class", function(d) { return "link " + d.type; })
+                                                                       .attr("class", "link")
+                                                                       .attr("marker-end", "url(#end)");
+
+                                       // define the nodes
+                                                               var node = svg.selectAll(".node")
+                                                                       .data(force.nodes())
+                                                                       .enter().append("g")
+                                                                       .attr("class", "node")
+
+                                                                       .on("mouseover", tip.show)
+                                                                             .on("mouseout", tip.hide)
+                                                                       .call(force.drag);
+
+                                       // add the nodes
+                                                               node.append("circle")
+                                                                       .attr("r", 15).style("fill", function(d) {
+                                                                           if(d.type=="Table"){
+                                                                               console.log(d);
+                                                                               return "url('#textICO')";
+
+                                                                           }else{
+                                                                               console.log(d);
+                                                                               return "url('#processICO')";
+                                                                           }
+                                                                           return colors(i);
+                                                                       });
+                                       // add the text
+                                                               node.append("text")
+                                                                       .attr("x", 12)
+                                                                       .attr("dy", ".35em")
+                                                                       .text(function(d) { return d.name; });
+
+
+                                       // add the curvy lines
+
+                                                               function tick() {
+                                                                node[0].x = width / 20;
+                                                                   node[0].y = height / 20;
+                                                                   path.attr("d", function(d) {
+                                                                       var dx = d.target.x - d.source.x,
+                                                                               dy = d.target.y - d.source.y,
+                                                                               dr = Math.sqrt(dx * dx + dy * dy);
+                                                                       return "M" +
+                                                                               d.source.x + "," +
+                                                                               d.source.y + "A" +
+                                                                               dr + "," + dr + " 0 0,1 " +
+                                                                               d.target.x + "," +
+                                                                               d.target.y;
+                                                                   });
+
+                                                                   node
+                                                                           .attr("transform", function(d) {
+                                                                               return "translate(" + d.x + "," + d.y + ")"; });
+                                                               }
+
+
+                                                           console.log($scope.vts2);
+
+                                                           });
+
+                                       				  })
+                                                       .error(function () {
+                                                       alert("Sorry No response");
+                                                    });
+
+                                               }
 
 
 

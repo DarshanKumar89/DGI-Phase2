@@ -207,6 +207,8 @@ DgcCont.controller("ListController", ['$scope','$http', '$filter','$stateParams'
 //                     $scope.iserror=true;
 //                     $scope.error=e;
                     $scope.noofresults=1;
+                    $scope.errormessage="no response";
+
 
 
                  });
