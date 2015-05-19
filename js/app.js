@@ -18,8 +18,9 @@
 
 var DgcApp = angular.module('DgcApp', [
     'ui.router',
-  'DgcControllers',
-  'DgcCont',
+  'DgcHomeModule',
+  'DgcSearchModule',
+  'DgcDetailModule',
   'ui.bootstrap'
 ]);
 
@@ -62,3 +63,23 @@ function ($window ,  $rootScope) {
     return false;
   }
 }]);
+
+
+DgcApp.service('sharedProperties', function () {
+              var property="";
+      		var Query="";
+
+              return {
+                  getProperty: function () {
+                      return property;
+                  },
+                  setProperty: function(value) {
+                      property = value;
+                  },
+      			getQuery: function () {
+                      return Query;
+                  },setQuery: function(value) {
+                      Query = value;
+                  }
+              };
+      });
