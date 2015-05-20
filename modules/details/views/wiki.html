@@ -21,11 +21,11 @@
         <br/>
         <br/>
         <div  class="title1" style="background-color:#F4F4F4;height:30px;" align="left" ng-repeat="(key, value) in details" ng-if="value && (key==='name')">
-            <p style="font-weight:bold;font-size:16px;color:#89BD3F "> &nbsp;{{value }}</p>
+            <p style="font-weight:bold;font-size:16px;color:#89BD3F "> &nbsp;Name : {{value }}</p>
         </div>
         <div  class="title1" style="background-color:#F4F4F4;height:30px;"  ng-repeat="(key, value) in details" ng-if="value && (key==='description')">
-            <!-- <h4> <b>{{value}} </b> </h4> -->
-            <p style="font-weight:bold;font-size:16px;color:#89BD3F"> &nbsp;{{value}}</p>
+
+            <p style="font-weight:bold;font-size:16px;color:#89BD3F"> &nbsp;Description : {{value}}</p>
         </div>
     </div>
     <tabset justified="true" class="col-lg-12 greyt">
